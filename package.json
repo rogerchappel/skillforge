@@ -1,1 +1,44 @@
-{"name":"skillforge","version":"0.1.0","description":"Host-neutral CLI for authoring, validating, testing, rendering, and packaging portable coding-agent skills.","type":"module","bin":{"skillforge":"dist/cli.js"},"files":["dist","templates","README.md","LICENSE"],"scripts":{"build":"tsc -p tsconfig.json","check":"tsc -p tsconfig.json --noEmit","test":"node --test tests/*.test.mjs","smoke":"bash scripts/smoke.sh","validate":"bash scripts/validate.sh","prepack":"npm run build"},"keywords":["agents","skills","cli","claude","codex","cursor","openclaw","workflow","prompt-engineering"],"author":"Roger Chappel","license":"MIT","engines":{"node":">=20"},"devDependencies":{"@types/node":"^22.15.3","typescript":"^5.8.3"}}
+{
+  "name": "skillforge",
+  "version": "0.1.0",
+  "description": "Host-neutral CLI for authoring, validating, testing, rendering, and packaging portable coding-agent skills.",
+  "type": "module",
+  "bin": {
+    "skillforge": "dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "smoke": "bash scripts/smoke.sh",
+    "validate": "bash scripts/validate.sh",
+    "prepack": "npm run build",
+    "pretest": "npm run build"
+  },
+  "keywords": [
+    "agents",
+    "skills",
+    "cli",
+    "claude",
+    "codex",
+    "cursor",
+    "openclaw",
+    "workflow",
+    "prompt-engineering"
+  ],
+  "author": "Roger Chappel",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "typescript": "^5.8.3"
+  }
+}
