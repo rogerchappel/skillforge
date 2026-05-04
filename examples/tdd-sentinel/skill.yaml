@@ -1,0 +1,30 @@
+name: tdd-sentinel
+title: TDD Sentinel
+description: Use this skill when a coding task should be driven by a failing test, a small implementation, and a verification loop.
+version: 0.1.0
+activation:
+  globs:
+    - "**/*.ts"
+    - "**/*.js"
+  keywords:
+    - tdd
+    - test-first
+    - failing test
+  examples:
+    - Please use TDD for this parser change.
+    - Add a failing test before implementing the bug fix.
+  antiExamples:
+    - Explain what TDD means at a high level.
+hosts:
+  - openclaw
+  - claude-plugin
+files:
+  - SKILL.md
+safety:
+  externalWrites: ask-first
+  notes:
+    - Do not push, publish, or alter production state without explicit consent.
+    - Prefer local fixture tests before network or external checks.
+verification:
+  - Show the failing test first when practical.
+  - Run the narrow test and then the broader suite.
