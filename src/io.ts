@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile, stat, cp, readdir } from 'node:fs/promises';
+import { mkdir, readFile, writeFile, stat, cp, readdir, copyFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { parseYaml, stringifyYaml } from './yaml.js';
 import type { SkillManifest } from './types.js';
@@ -9,7 +9,17 @@ export async function exists(path: string): Promise<boolean> {
 
 export async function readText(path: string): Promise<string> { return readFile(path, 'utf8'); }
 export async function writeText(path: string, content: string): Promise<void> { await mkdir(dirname(path), { recursive: true }); await writeFile(path, content); }
-export async function copyDir(src: string, dest: string): Promise<void> { await mkdir(dest, { recursive: true }); await cp(src, dest, { recursive: true, force: true }); }
+export async function copyPath(src: string, dest: string): Promise<void> {
+  const info = await stat(src);
+  if (info.isDirectory()) {
+    await mkdir(dest, { recursive: true });
+    await cp(src, dest, { recursive: true, force: true });
+  } else {
+    await mkdir(dirname(dest), { recursive: true });
+    await copyFile(src, dest);
+  }
+}
+export const copyDir = copyPath;
 export async function listFiles(dir: string): Promise<string[]> {
   const out: string[] = [];
   async function walk(base: string, rel = '') {
