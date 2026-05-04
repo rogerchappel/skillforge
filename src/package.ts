@@ -1,12 +1,10 @@
 import { createHash } from 'node:crypto';
-import { createWriteStream } from 'node:fs';
+import { createReadStream } from 'node:fs';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { basename, join, resolve } from 'node:path';
-import { Readable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
-import { createGzip } from 'node:zlib';
-import { listFiles, readText, copyDir, writeText } from './io.js';
+import { join, resolve } from 'node:path';
+import { spawn } from 'node:child_process';
+import { listFiles, copyDir, writeText } from './io.js';
 import { readManifest } from './io.js';
 
 export async function packageSkill(dir: string, out: string): Promise<{ out: string; sha256: string; files: string[] }> {
@@ -17,18 +15,24 @@ export async function packageSkill(dir: string, out: string): Promise<{ out: str
     const staging = join(tmp, manifest.name);
     await copyDir(dir, staging);
     await writeText(join(staging, 'SKILLFORGE_PACKAGE.json'), JSON.stringify({ name: manifest.name, version: manifest.version, files }, null, 2) + '\n');
-    const payload = JSON.stringify(await collect(staging), null, 2) + '\n';
     const target = resolve(out || `${manifest.name}.skill.tgz`);
-    const hash = createHash('sha256');
-    const gzip = createGzip();
-    gzip.on('data', (chunk) => hash.update(chunk));
-    await pipeline(Readable.from(payload), gzip, createWriteStream(target));
-    return { out: target, sha256: hash.digest('hex'), files };
+    await runTar(tmp, manifest.name, target);
+    return { out: target, sha256: await sha256File(target), files };
   } finally { await rm(tmp, { recursive: true, force: true }); }
 }
 
-async function collect(dir: string): Promise<Record<string, string>> {
-  const entries: Record<string, string> = {};
-  for (const file of await listFiles(dir)) entries[join(basename(dir), file)] = await readText(join(dir, file));
-  return entries;
+async function runTar(cwd: string, folder: string, target: string): Promise<void> {
+  await new Promise<void>((resolvePromise, reject) => {
+    const child = spawn('tar', ['-czf', target, folder], { cwd, stdio: 'ignore' });
+    child.on('error', reject);
+    child.on('exit', (code) => code === 0 ? resolvePromise() : reject(new Error(`tar exited with ${code}`)));
+  });
+}
+
+async function sha256File(path: string): Promise<string> {
+  const hash = createHash('sha256');
+  await new Promise<void>((resolvePromise, reject) => {
+    createReadStream(path).on('data', (chunk) => hash.update(chunk)).on('error', reject).on('end', resolvePromise);
+  });
+  return hash.digest('hex');
 }
