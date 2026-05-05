@@ -1,0 +1,39 @@
+name: Release dry run
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - releasebox.config.json
+      - package.json
+      - .github/workflows/release*.yml
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  dry-run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+      - run: npm run smoke --if-present
+      - run: npm pack --dry-run
+      - name: Release notes preview
+        run: |
+          if npm run --silent release:notes --if-present -- . > release-notes-preview.md && [ -s release-notes-preview.md ]; then
+            cat release-notes-preview.md
+          else
+            echo "## Release candidate" > release-notes-preview.md
+            git log --oneline --max-count=20 >> release-notes-preview.md
+            cat release-notes-preview.md
+          fi
+      - name: Publish release notes summary
+        run: cat release-notes-preview.md >> "$GITHUB_STEP_SUMMARY"
