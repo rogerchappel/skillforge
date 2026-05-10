@@ -20,7 +20,8 @@
     "validate": "bash scripts/validate.sh",
     "prepack": "npm run build",
     "pretest": "npm run build",
-    "release:check": "npm run validate && npm pack --dry-run"
+    "release:check": "npm run validate && npm run package:smoke",
+    "package:smoke": "bash scripts/package-smoke.sh"
   },
   "keywords": [
     "agents",
