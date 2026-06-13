@@ -10,7 +10,10 @@
     "dist",
     "templates",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "SECURITY.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -42,5 +45,13 @@
   "devDependencies": {
     "@types/node": "^22.15.3",
     "typescript": "^5.8.3"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rogerchappel/skillforge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rogerchappel/skillforge/issues"
+  },
+  "homepage": "https://github.com/rogerchappel/skillforge#readme"
 }
