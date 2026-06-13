@@ -8,6 +8,8 @@
   },
   "files": [
     "dist",
+    "docs",
+    "SKILL.md",
     "templates",
     "README.md",
     "LICENSE",
