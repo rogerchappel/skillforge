@@ -26,6 +26,7 @@ skillforge lint ./tdd-workflow
 skillforge test ./tdd-workflow --fixtures ./tdd-workflow/fixtures/activation.json
 skillforge render ./tdd-workflow --target openclaw --out dist/openclaw
 skillforge render ./tdd-workflow --target claude-plugin --out dist/claude
+skillforge matrix ./tdd-workflow --format markdown
 skillforge package ./tdd-workflow --out dist/tdd-workflow.skill.tgz
 ```
 
@@ -35,6 +36,7 @@ skillforge package ./tdd-workflow --out dist/tdd-workflow.skill.tgz
 - Activation clarity: examples, keywords, and fixture outcomes.
 - Safety smell tests: risky commands and unqualified external writes.
 - Portability warnings: host-specific language inside generic skill docs.
+- Compatibility matrix: declared host targets, renderability, blockers, and warnings.
 
 ## Example: TDD Sentinel
 
@@ -42,6 +44,7 @@ skillforge package ./tdd-workflow --out dist/tdd-workflow.skill.tgz
 npm run build
 node dist/cli.js lint examples/tdd-sentinel
 node dist/cli.js test examples/tdd-sentinel --fixtures examples/tdd-sentinel/fixtures/activation.json
+node dist/cli.js matrix examples/tdd-sentinel --format json
 node dist/cli.js render examples/tdd-sentinel --target openclaw --out /tmp/skillforge-openclaw
 ```
 

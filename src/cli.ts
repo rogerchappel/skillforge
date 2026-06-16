@@ -7,6 +7,7 @@ import { readManifest } from './io.js';
 import { runActivationFixtures } from './activate.js';
 import { renderSkill } from './render.js';
 import { packageSkill } from './package.js';
+import { buildCompatibilityMatrix, renderCompatibilityMatrix } from './matrix.js';
 import type { ActivationFixture, HostTarget } from './types.js';
 
 const [, , command, ...args] = process.argv;
@@ -18,6 +19,7 @@ try {
   else if (command === 'test') await cmdTest(args);
   else if (command === 'render') await cmdRender(args);
   else if (command === 'package') await cmdPackage(args);
+  else if (command === 'matrix') await cmdMatrix(args);
   else if (command === 'report') await cmdReport(args);
   else throw new Error(`Unknown command: ${command}`);
 } catch (error) {
@@ -58,6 +60,15 @@ async function cmdPackage(args: string[]) {
   console.log(`packaged ${result.files.length} file(s) to ${result.out}`);
   console.log(`sha256 ${result.sha256}`);
 }
+async function cmdMatrix(args: string[]) {
+  const dir = resolve(args[0] ?? '.');
+  const format = valueOf(args, '--format') ?? 'markdown';
+  const matrix = await buildCompatibilityMatrix(dir);
+  if (format === 'json') console.log(JSON.stringify(matrix, null, 2));
+  else if (format === 'markdown') process.stdout.write(renderCompatibilityMatrix(matrix));
+  else throw new Error('Usage: skillforge matrix <dir> [--format markdown|json]');
+  if (!matrix.ok) process.exitCode = 1;
+}
 async function cmdReport(args: string[]) {
   const dir = resolve(args[0] ?? '.');
   const manifest = await readManifest(dir);
@@ -65,4 +76,4 @@ async function cmdReport(args: string[]) {
   console.log(JSON.stringify({ manifest: manifest.name, hosts: manifest.hosts, diagnostics }, null, 2));
 }
 function valueOf(args: string[], flag: string): string | undefined { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : undefined; }
-function help() { console.log(`skillforge — portable coding-agent skill foundry\n\nCommands:\n  skillforge init <name>\n  skillforge lint <skill-dir>\n  skillforge test <skill-dir> --fixtures fixtures/activation.json\n  skillforge render <skill-dir> --target openclaw --out dist/openclaw\n  skillforge render <skill-dir> --target claude-plugin --out dist/claude\n  skillforge package <skill-dir> --out dist/name.skill.tgz\n  skillforge report <skill-dir>\n`); }
+function help() { console.log(`skillforge — portable coding-agent skill foundry\n\nCommands:\n  skillforge init <name>\n  skillforge lint <skill-dir>\n  skillforge test <skill-dir> --fixtures fixtures/activation.json\n  skillforge render <skill-dir> --target openclaw --out dist/openclaw\n  skillforge render <skill-dir> --target claude-plugin --out dist/claude\n  skillforge matrix <skill-dir> [--format markdown|json]\n  skillforge package <skill-dir> --out dist/name.skill.tgz\n  skillforge report <skill-dir>\n`); }
