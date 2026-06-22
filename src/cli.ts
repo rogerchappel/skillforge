@@ -8,6 +8,7 @@ import { runActivationFixtures } from './activate.js';
 import { renderSkill } from './render.js';
 import { packageSkill } from './package.js';
 import { buildCompatibilityMatrix, renderCompatibilityMatrix } from './matrix.js';
+import { buildValidationReport, renderValidationReport } from './report.js';
 import type { ActivationFixture, HostTarget } from './types.js';
 
 const [, , command, ...args] = process.argv;
@@ -74,9 +75,12 @@ async function cmdMatrix(args: string[]) {
 }
 async function cmdReport(args: string[]) {
   const dir = resolve(args[0] ?? '.');
-  const manifest = await readManifest(dir);
-  const diagnostics = await lintSkill(dir);
-  console.log(JSON.stringify({ manifest: manifest.name, hosts: manifest.hosts, diagnostics }, null, 2));
+  const format = valueOf(args, '--format') ?? 'json';
+  const report = await buildValidationReport(dir);
+  if (format === 'json') console.log(JSON.stringify(report, null, 2));
+  else if (format === 'markdown') process.stdout.write(renderValidationReport(report));
+  else throw new Error('Usage: skillforge report <dir> [--format json|markdown]');
+  if (!report.ok) process.exitCode = 1;
 }
 function valueOf(args: string[], flag: string): string | undefined { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : undefined; }
-function help() { console.log(`skillforge — portable coding-agent skill foundry\n\nCommands:\n  skillforge init <name>\n  skillforge lint <skill-dir>\n  skillforge test <skill-dir> --fixtures fixtures/activation.json\n  skillforge render <skill-dir> --target openclaw --out dist/openclaw\n  skillforge render <skill-dir> --target claude-plugin --out dist/claude\n  skillforge matrix <skill-dir> [--format markdown|json]\n  skillforge package <skill-dir> --out dist/name.skill.tgz\n  skillforge report <skill-dir>\n`); }
+function help() { console.log(`skillforge — portable coding-agent skill foundry\n\nCommands:\n  skillforge init <name>\n  skillforge lint <skill-dir>\n  skillforge test <skill-dir> --fixtures fixtures/activation.json\n  skillforge render <skill-dir> --target openclaw --out dist/openclaw\n  skillforge render <skill-dir> --target claude-plugin --out dist/claude\n  skillforge matrix <skill-dir> [--format markdown|json]\n  skillforge package <skill-dir> --out dist/name.skill.tgz\n  skillforge report <skill-dir> [--format json|markdown]\n`); }

@@ -22,6 +22,7 @@ Use this skill when an agent needs to turn repeatable engineering instructions i
 - `skillforge test <skill-dir> --fixtures <path>` runs activation examples against the manifest.
 - `skillforge render <skill-dir> --target <target> --out <dir>` writes host-specific files.
 - `skillforge package <skill-dir> --out <file>` creates a deterministic archive with a SHA-256 digest.
+- `skillforge report <skill-dir> --format json|markdown` combines lint and compatibility results for release gates.
 
 ## Side Effects
 
@@ -44,7 +45,7 @@ For a single candidate skill, run:
 ```sh
 skillforge lint ./my-skill
 skillforge test ./my-skill --fixtures ./my-skill/fixtures/activation.json
-skillforge report ./my-skill
+skillforge report ./my-skill --format json
 ```
 
 ## Example
@@ -52,6 +53,7 @@ skillforge report ./my-skill
 ```sh
 skillforge init pr-review
 skillforge lint ./pr-review
+skillforge report ./pr-review --format markdown
 skillforge render ./pr-review --target openclaw --out ./dist/openclaw
 skillforge package ./pr-review --out ./dist/pr-review.skill.tgz
 ```
