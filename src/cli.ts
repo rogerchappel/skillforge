@@ -41,7 +41,10 @@ async function cmdTest(args: string[]) {
   const manifest = await readManifest(dir);
   const fixtures = JSON.parse(await readFile(fixturesPath, 'utf8')) as ActivationFixture[];
   const results = runActivationFixtures(manifest, fixtures);
-  for (const r of results) console.log(`${r.actual === r.shouldActivate ? '✓' : '✗'} ${r.shouldActivate ? 'activate' : 'skip'} :: ${r.prompt}`);
+  for (const r of results) {
+    const blocked = r.blockedBy.length ? ` blocked=${r.blockedBy.join(',')}` : '';
+    console.log(`${r.actual === r.shouldActivate ? '✓' : '✗'} ${r.shouldActivate ? 'activate' : 'skip'} :: ${r.prompt}${blocked}`);
+  }
   const failures = results.filter((r) => r.actual !== r.shouldActivate);
   if (failures.length) throw new Error(`${failures.length} activation fixture(s) failed.`);
 }

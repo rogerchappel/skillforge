@@ -1,6 +1,6 @@
 [
   { "prompt": "Please use TDD for this parser change.", "shouldActivate": true },
   { "prompt": "Add a failing test before implementing the bug fix.", "shouldActivate": true },
-  { "prompt": "Explain what TDD means at a high level.", "shouldActivate": true },
+  { "prompt": "Explain what TDD means at a high level.", "shouldActivate": false, "reason": "The request asks for a definition, not a test-first coding workflow." },
   { "prompt": "Tell me a joke about compilers.", "shouldActivate": false }
 ]

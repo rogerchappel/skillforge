@@ -36,4 +36,5 @@ export interface ActivationFixture {
 export interface ActivationResult extends ActivationFixture {
   actual: boolean;
   matched: string[];
+  blockedBy: string[];
 }
