@@ -27,6 +27,7 @@ skillforge test ./tdd-workflow --fixtures ./tdd-workflow/fixtures/activation.jso
 skillforge render ./tdd-workflow --target openclaw --out dist/openclaw
 skillforge render ./tdd-workflow --target claude-plugin --out dist/claude
 skillforge matrix ./tdd-workflow --format markdown
+skillforge report ./tdd-workflow --format json
 skillforge package ./tdd-workflow --out dist/tdd-workflow.skill.tgz
 ```
 
@@ -45,8 +46,11 @@ npm run build
 node dist/cli.js lint examples/tdd-sentinel
 node dist/cli.js test examples/tdd-sentinel --fixtures examples/tdd-sentinel/fixtures/activation.json
 node dist/cli.js matrix examples/tdd-sentinel --format json
+node dist/cli.js report examples/tdd-sentinel --format markdown
 node dist/cli.js render examples/tdd-sentinel --target openclaw --out /tmp/skillforge-openclaw
 ```
+
+`skillforge report` combines lint diagnostics and the compatibility matrix into one release-gate summary. JSON is the default for CI and agent runners; Markdown is for pull request notes.
 
 ## Canonical layout
 
