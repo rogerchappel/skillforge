@@ -22,7 +22,7 @@ export async function initSkill(name: string, cwd = process.cwd()): Promise<stri
     verification: ['Run the smallest meaningful check before claiming success.']
   };
   await writeManifest(dir, manifest);
-  await writeText(join(dir, 'SKILL.md'), `# ${titleCase(name)}\n\n## When to use\n\n${manifest.description}\n\n## Workflow\n\n1. Clarify the desired outcome only when blocked.\n2. Inspect the current state before changing it.\n3. Make the smallest useful change.\n4. Verify with tests, lint, build, or direct inspection.\n5. Report what changed and any remaining risk.\n\n## Safety\n\n${manifest.safety.notes.map((n) => `- ${n}`).join('\n')}\n`);
+  await writeText(join(dir, 'SKILL.md'), `# ${titleCase(name)}\n\n## When to use\n\n${manifest.description}\n\n## Workflow\n\n1. Clarify the desired outcome only when blocked.\n2. Inspect the current state before changing it.\n3. Make the smallest useful change.\n4. Verify with tests, lint, build, or direct inspection.\n5. Report what changed and any remaining risk.\n\n## Safety\n\n${manifest.safety.notes.map((n) => `- ${n}`).join('\n')}\n\n## Verification\n\n${manifest.verification.map((step) => `- ${step}`).join('\n')}\n`);
   await writeText(join(dir, 'fixtures', 'activation.json'), JSON.stringify([
     { prompt: `Please use ${name} on this repo`, shouldActivate: true },
     { prompt: 'What is the weather?', shouldActivate: false }
