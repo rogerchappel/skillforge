@@ -10,3 +10,9 @@
 - `files`: source files required by the skill.
 - `safety.externalWrites`: `forbidden`, `ask-first`, or `allowed`.
 - `verification`: checks an agent should run before claiming completion.
+
+## Lint expectations
+
+Portable skills should include both positive activation examples and anti-examples. Missing anti-examples are reported as warnings because older skill bundles can still render, but release reviewers should treat the warning as a quality gap before publishing.
+
+When `files` includes `SKILL.md`, the linter also checks for sections that cover activation, workflow, safety or approvals, and verification. These section warnings are meant to keep generated skills usable by agents without requiring each host adapter to infer side-effect boundaries from prose.
