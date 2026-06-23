@@ -45,8 +45,8 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "@types/node": "^22.15.3",
-    "typescript": "^5.8.3"
+    "@types/node": "^26.0.0",
+    "typescript": "^6.0.3"
   },
   "repository": {
     "type": "git",
