@@ -26,7 +26,8 @@
     "prepack": "npm run build",
     "pretest": "npm run build",
     "release:check": "npm run validate && npm run package:smoke",
-    "package:smoke": "bash scripts/package-smoke.sh"
+    "package:smoke": "bash scripts/package-smoke.sh",
+    "lint": "npm run check"
   },
   "keywords": [
     "agents",

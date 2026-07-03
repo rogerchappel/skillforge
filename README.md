@@ -66,3 +66,13 @@ my-skill/
 ## Status
 
 MVP: useful today for local authoring, validation, rendering, package artifacts, and CI smoke tests. Marketplace publishing and host auto-installation are intentionally out of scope.
+
+## Local Verification
+
+```sh
+npm run check
+npm test
+npm run smoke
+npm run package:smoke
+npm run release:check
+```
