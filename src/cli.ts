@@ -32,8 +32,15 @@ async function cmdInit(args: string[]) { const name = args[0]; if (!name) throw 
 async function cmdLint(args: string[]) {
   const dir = resolve(args[0] ?? '.');
   const diagnostics = await lintSkill(dir);
-  if (!diagnostics.length) console.log('✓ no lint findings');
-  for (const d of diagnostics) console.log(`${d.level.toUpperCase()} ${d.code}${d.file ? ` ${d.file}` : ''} - ${d.message}`);
+  const format = valueOf(args, '--format') ?? (args.includes('--json') ? 'json' : 'text');
+  if (format === 'json') {
+    console.log(JSON.stringify({ directory: dir, diagnostics, hasErrors: hasErrors(diagnostics) }, null, 2));
+  } else if (format === 'text') {
+    if (!diagnostics.length) console.log('✓ no lint findings');
+    for (const d of diagnostics) console.log(`${d.level.toUpperCase()} ${d.code}${d.file ? ` ${d.file}` : ''} - ${d.message}`);
+  } else {
+    throw new Error('Usage: skillforge lint <skill-dir> [--format text|json]');
+  }
   if (hasErrors(diagnostics)) process.exit(1);
 }
 async function cmdTest(args: string[]) {
@@ -83,4 +90,4 @@ async function cmdReport(args: string[]) {
   if (!report.ok) process.exitCode = 1;
 }
 function valueOf(args: string[], flag: string): string | undefined { const i = args.indexOf(flag); return i >= 0 ? args[i + 1] : undefined; }
-function help() { console.log(`skillforge — portable coding-agent skill foundry\n\nCommands:\n  skillforge init <name>\n  skillforge lint <skill-dir>\n  skillforge test <skill-dir> --fixtures fixtures/activation.json\n  skillforge render <skill-dir> --target openclaw --out dist/openclaw\n  skillforge render <skill-dir> --target claude-plugin --out dist/claude\n  skillforge matrix <skill-dir> [--format markdown|json]\n  skillforge package <skill-dir> --out dist/name.skill.tgz\n  skillforge report <skill-dir> [--format json|markdown]\n`); }
+function help() { console.log(`skillforge — portable coding-agent skill foundry\n\nCommands:\n  skillforge init <name>\n  skillforge lint <skill-dir> [--format text|json]\n  skillforge test <skill-dir> --fixtures fixtures/activation.json\n  skillforge render <skill-dir> --target openclaw --out dist/openclaw\n  skillforge render <skill-dir> --target claude-plugin --out dist/claude\n  skillforge matrix <skill-dir> [--format markdown|json]\n  skillforge package <skill-dir> --out dist/name.skill.tgz\n  skillforge report <skill-dir> [--format json|markdown]\n`); }
