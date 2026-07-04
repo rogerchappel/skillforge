@@ -2,7 +2,7 @@
 
 **Forge agent skills that travel.** skillforge is a local-first CLI for turning repeatable engineering rituals into portable, linted, tested skill bundles for coding agents.
 
-It is the little blacksmith in your toolchain: one canonical `skill.yaml`, one `SKILL.md`, fixture-backed activation tests, and rendered layouts for host-specific agents.
+It uses one canonical `skill.yaml`, one `SKILL.md`, fixture-backed activation tests, and rendered layouts for host-specific agents.
 
 ## Install
 
@@ -23,6 +23,7 @@ node dist/cli.js --help
 ```bash
 skillforge init tdd-workflow
 skillforge lint ./tdd-workflow
+skillforge lint ./tdd-workflow --format json
 skillforge test ./tdd-workflow --fixtures ./tdd-workflow/fixtures/activation.json
 skillforge render ./tdd-workflow --target openclaw --out dist/openclaw
 skillforge render ./tdd-workflow --target claude-plugin --out dist/claude
@@ -51,6 +52,8 @@ node dist/cli.js render examples/tdd-sentinel --target openclaw --out /tmp/skill
 ```
 
 `skillforge report` combines lint diagnostics and the compatibility matrix into one release-gate summary. JSON is the default for CI and agent runners; Markdown is for pull request notes.
+
+`skillforge lint --format json` emits only lint diagnostics and is useful when another agent or CI job wants a smaller quality gate before rendering or packaging.
 
 ## Canonical layout
 

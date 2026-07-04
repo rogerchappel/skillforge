@@ -1,59 +1,47 @@
----
-name: skillforge
-description: Author, lint, test, render, and package portable coding-agent skills.
-version: 0.1.0
-targets: [codex, claude, openclaw, agents]
-tags: [skills, packaging, validation, agent-workflows]
----
+# skillforge Skill
 
-# skillforge
+## When To Use
 
-Use this skill when an agent needs to turn repeatable engineering instructions into a portable, reviewable skill bundle.
+Use this skill when an agent needs to create, lint, test, render, package, or review a portable coding-agent skill bundle. It is especially useful for release gates around `skill.yaml`, `SKILL.md`, activation fixtures, host rendering, and safety notes.
 
 ## Inputs
 
-- A local skill directory containing `skill.yaml`, `SKILL.md`, and optional `fixtures/activation.json`.
-- A target host layout, currently `openclaw` or `claude-plugin`, when rendering host-specific output.
-- A local output path for rendered files or packaged `.skill.tgz` artifacts.
+- A local skill directory with `skill.yaml` and `SKILL.md`.
+- Optional activation fixture file.
+- Optional host target such as `openclaw` or `claude-plugin`.
+- Optional output directory or package archive path.
 
-## Tools
+## Side-Effect Boundaries
 
-- `skillforge lint <skill-dir>` checks manifest, documentation, activation, and safety quality.
-- `skillforge test <skill-dir> --fixtures <path>` runs activation examples against the manifest.
-- `skillforge render <skill-dir> --target <target> --out <dir>` writes host-specific files.
-- `skillforge package <skill-dir> --out <file>` creates a deterministic archive with a SHA-256 digest.
-- `skillforge report <skill-dir> --format json|markdown` combines lint and compatibility results for release gates.
+The lint, test, matrix, and report commands read local files only. Render and package commands write only to the requested output path. The CLI does not publish packages, install skills into an agent host, call network APIs, or approve skill proposals.
 
-## Side Effects
+## Workflow
 
-`lint`, `test`, and `report` are read-only. `init`, `render`, and `package` write only to the explicit local destination. No command publishes packages, installs skills into a live agent host, or calls network services.
+1. Run `skillforge lint <skill-dir> --format json` for a small machine-readable quality gate.
+2. Run `skillforge test <skill-dir> --fixtures <skill-dir>/fixtures/activation.json` to check activation examples and anti-examples.
+3. Run `skillforge matrix <skill-dir> --format markdown` to inspect host compatibility.
+4. Run `skillforge report <skill-dir> --format json` before release-candidate review.
+5. Render or package only after diagnostics are clean or intentionally accepted.
 
-## Approval Boundaries
+## Approval Requirements
 
-Ask for explicit approval before overwriting an existing skill directory, copying rendered output into a live agent configuration, or publishing a generated package anywhere outside the local workspace.
+Ask before writing rendered host layouts into a user-controlled skill directory. Ask before packaging a bundle intended for external sharing. Do not publish, install, or approve skills unless the user explicitly asks for that separate action.
 
-## Validation
+## Examples
+
+```sh
+skillforge lint examples/tdd-sentinel --format json
+skillforge test examples/tdd-sentinel --fixtures examples/tdd-sentinel/fixtures/activation.json
+skillforge report examples/tdd-sentinel --format markdown
+skillforge render examples/tdd-sentinel --target openclaw --out /tmp/tdd-sentinel-openclaw
+```
+
+## Verification
 
 Run:
 
 ```sh
-npm run release:check
-```
-
-For a single candidate skill, run:
-
-```sh
-skillforge lint ./my-skill
-skillforge test ./my-skill --fixtures ./my-skill/fixtures/activation.json
-skillforge report ./my-skill --format json
-```
-
-## Example
-
-```sh
-skillforge init pr-review
-skillforge lint ./pr-review
-skillforge report ./pr-review --format markdown
-skillforge render ./pr-review --target openclaw --out ./dist/openclaw
-skillforge package ./pr-review --out ./dist/pr-review.skill.tgz
+npm run check
+npm test
+npm run smoke
 ```
