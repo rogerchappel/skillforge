@@ -5,6 +5,8 @@
 - [x] Create npm/TypeScript CLI package metadata.
 - [x] Define canonical `skill.yaml` manifest model.
 - [x] Implement `init`, `lint`, `test`, `render`, `package`, and `report` commands.
+- [x] Add machine-readable `skillforge lint --format json` output.
+- [x] Add project-level skill usage guidance for agent operators.
 - [x] Add OpenClaw renderer.
 - [x] Add Claude plugin-style renderer.
 - [x] Add fixture-backed activation testing.
