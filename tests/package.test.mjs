@@ -6,6 +6,7 @@ import { promisify } from 'node:util';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { packageSkill } from '../dist/package.js';
+import { initSkill } from '../dist/init.js';
 
 const execFileAsync = promisify(execFile);
 
@@ -50,6 +51,22 @@ test('packages the manifest and declared nested files while excluding undeclared
   const extract = await mkdtemp(join(tmpdir(), 'skillforge-package-extract-'));
   await execFileAsync('tar', ['-xzf', out, '-C', extract]);
   const metadata = JSON.parse(await readFile(join(extract, 'package-test', 'SKILLFORGE_PACKAGE.json'), 'utf8'));
+  assert.deepEqual(metadata.files, result.files);
+});
+
+test('packages the activation fixture created by init and records it in package metadata', async () => {
+  const cwd = await mkdtemp(join(tmpdir(), 'skillforge-init-package-test-'));
+  const dir = await initSkill('generated-skill', cwd);
+  const out = join(cwd, 'generated-skill.skill.tgz');
+  const result = await packageSkill(dir, out);
+  const { stdout } = await execFileAsync('tar', ['-tzf', out]);
+
+  assert.deepEqual(result.files, ['skill.yaml', 'SKILL.md', 'fixtures/activation.json']);
+  assert.match(stdout, /generated-skill\/fixtures\/activation\.json/);
+
+  const extract = await mkdtemp(join(tmpdir(), 'skillforge-init-package-extract-'));
+  await execFileAsync('tar', ['-xzf', out, '-C', extract]);
+  const metadata = JSON.parse(await readFile(join(extract, 'generated-skill', 'SKILLFORGE_PACKAGE.json'), 'utf8'));
   assert.deepEqual(metadata.files, result.files);
 });
 
