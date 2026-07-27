@@ -17,7 +17,7 @@ export async function initSkill(name: string, cwd = process.cwd()): Promise<stri
       antiExamples: ['Casual conversation with no workflow request.']
     },
     hosts: ['openclaw', 'claude-plugin'],
-    files: ['SKILL.md'],
+    files: ['SKILL.md', 'fixtures/activation.json'],
     safety: { externalWrites: 'ask-first', notes: ['Ask before external side effects such as publishing, email, or production changes.'] },
     verification: ['Run the smallest meaningful check before claiming success.']
   };
