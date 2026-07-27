@@ -22,3 +22,6 @@ npx skillforge test parser-guard --fixtures parser-guard/fixtures/activation.jso
 npx skillforge render parser-guard --target openclaw --out rendered/openclaw >/dev/null
 npx skillforge package parser-guard --out parser-guard.skill.tgz | grep -q '^sha256 '
 test -s parser-guard.skill.tgz
+tar -tzf parser-guard.skill.tgz | grep -q '^parser-guard/fixtures/activation\.json$'
+tar -xOf parser-guard.skill.tgz parser-guard/SKILLFORGE_PACKAGE.json \
+  | grep -q '"fixtures/activation.json"'

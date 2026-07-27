@@ -32,6 +32,10 @@ skillforge report ./tdd-workflow --format json
 skillforge package ./tdd-workflow --out dist/tdd-workflow.skill.tgz
 ```
 
+The package contains `skill.yaml` plus every portable source path listed in its
+`files` field. Skills created by `skillforge init` include both `SKILL.md` and
+`fixtures/activation.json`, so their activation checks travel with the archive.
+
 ## What it checks
 
 - Manifest shape: name, description, version, host support, files, safety, verification.
