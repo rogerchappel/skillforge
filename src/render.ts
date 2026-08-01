@@ -1,5 +1,5 @@
 import { basename, join } from 'node:path';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
 import { copyDir, exists, readManifest, readText, writeText } from './io.js';
 import type { HostTarget, SkillManifest } from './types.js';
 
@@ -12,20 +12,25 @@ export async function renderSkill(dir: string, target: HostTarget, out: string):
 
 async function renderOpenClaw(dir: string, out: string, manifest: SkillManifest): Promise<string[]> {
   const skillDir = join(out, manifest.name);
+  await rm(skillDir, { recursive: true, force: true });
   await mkdir(skillDir, { recursive: true });
   const written: string[] = [];
   for (const file of manifest.files) {
     await copyDir(join(dir, file), join(skillDir, file));
     written.push(join(manifest.name, file));
   }
-  await writeText(join(skillDir, 'README.md'), hostReadme(manifest, 'OpenClaw'));
-  written.push(join(manifest.name, 'README.md'));
+  const readme = join(skillDir, 'README.md');
+  if (!(await exists(readme))) {
+    await writeText(readme, hostReadme(manifest, 'OpenClaw'));
+    written.push(join(manifest.name, 'README.md'));
+  }
   return written;
 }
 
 async function renderClaudePlugin(dir: string, out: string, manifest: SkillManifest): Promise<string[]> {
   const pluginDir = join(out, `${manifest.name}-plugin`);
   const skillsDir = join(pluginDir, 'skills', manifest.name);
+  await rm(pluginDir, { recursive: true, force: true });
   await mkdir(skillsDir, { recursive: true });
   const skillMd = await readText(join(dir, 'SKILL.md'));
   await writeText(join(skillsDir, 'SKILL.md'), skillMd);
