@@ -59,6 +59,10 @@ node dist/cli.js render examples/tdd-sentinel --target openclaw --out /tmp/skill
 
 `skillforge lint --format json` emits only lint diagnostics and is useful when another agent or CI job wants a smaller quality gate before rendering or packaging.
 
+Each command accepts at most one skill directory or name and only the options shown
+in `skillforge --help`. Unknown, duplicate, conflicting, or incomplete options fail
+with a nonzero exit code, concise usage on stderr, and no result output on stdout.
+
 ## Canonical layout
 
 ```text
