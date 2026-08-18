@@ -7,7 +7,7 @@ It uses one canonical `skill.yaml`, one `SKILL.md`, fixture-backed activation te
 ## Install
 
 ```bash
-npm install -g skillforge
+npm install -g @rogerchappel/skillforge
 ```
 
 Or run from a checkout:
@@ -76,7 +76,7 @@ my-skill/
 
 ## Status
 
-MVP: useful today for local authoring, validation, rendering, package artifacts, and CI smoke tests. Marketplace publishing and host auto-installation are intentionally out of scope.
+MVP: useful today for local authoring, validation, rendering, package artifacts, and CI smoke tests. The npm distribution target is `@rogerchappel/skillforge`; marketplace publishing and host auto-installation are intentionally out of scope.
 
 ## Local Verification
 
