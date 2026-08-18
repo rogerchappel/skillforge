@@ -1,6 +1,6 @@
 {
-  "name": "skillforge",
-  "version": "0.1.0",
+  "name": "@rogerchappel/skillforge",
+  "version": "0.2.0",
   "description": "Host-neutral CLI for authoring, validating, testing, rendering, and packaging portable coding-agent skills.",
   "type": "module",
   "bin": {
