@@ -7,14 +7,20 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 
 cd "$ROOT_DIR"
 npm run build >/dev/null
-npm pack --pack-destination "$TMP_DIR" >/dev/null
-PACKAGE_TGZ="$(find "$TMP_DIR" -maxdepth 1 -name 'skillforge-*.tgz' -print -quit)"
+npm pack --json --pack-destination "$TMP_DIR" > "$TMP_DIR/pack.json"
+PACKAGE_FILENAME="$(node -e "const fs=require('node:fs'); const result=JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); process.stdout.write(result[0].filename)" "$TMP_DIR/pack.json")"
+PACKAGE_TGZ="$TMP_DIR/$PACKAGE_FILENAME"
 test -n "$PACKAGE_TGZ"
+test -f "$PACKAGE_TGZ"
+
+PACKAGE_JSON="$(tar -xOf "$PACKAGE_TGZ" package/package.json)"
+node -e "const value=JSON.parse(process.argv[1]); if(value.name !== '@rogerchappel/skillforge' || value.version !== '0.2.0' || value.bin?.skillforge !== 'dist/cli.js') process.exit(1)" "$PACKAGE_JSON"
 
 mkdir -p "$TMP_DIR/app"
 cd "$TMP_DIR/app"
 npm init -y >/dev/null
 npm install "$PACKAGE_TGZ" >/dev/null
+npm ls @rogerchappel/skillforge --depth=0 >/dev/null
 npx skillforge --help >/dev/null
 npx skillforge init parser-guard --cwd "$TMP_DIR/app" >/dev/null
 npx skillforge lint parser-guard | grep -q 'no lint findings'
