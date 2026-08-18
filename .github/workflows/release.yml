@@ -27,6 +27,8 @@ jobs:
       - run: npm ci
       - run: npm run release:check
       - run: npm pack
+      - name: Publish npm package with provenance
+        run: npm publish --access public --provenance
       - name: Generate release notes
         run: |
           if ! npm run --silent release:notes --if-present -- . > RELEASE_NOTES.md || [ ! -s RELEASE_NOTES.md ]; then
