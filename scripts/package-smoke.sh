@@ -14,7 +14,7 @@ test -n "$PACKAGE_TGZ"
 test -f "$PACKAGE_TGZ"
 
 PACKAGE_JSON="$(tar -xOf "$PACKAGE_TGZ" package/package.json)"
-node -e "const value=JSON.parse(process.argv[1]); if(value.name !== '@rogerchappel/skillforge' || value.version !== '0.2.0' || value.bin?.skillforge !== 'dist/cli.js') process.exit(1)" "$PACKAGE_JSON"
+node -e "const value=JSON.parse(process.argv[1]); const source=require('./package.json'); if(value.name !== source.name || value.version !== source.version || value.bin?.skillforge !== 'dist/cli.js') process.exit(1)" "$PACKAGE_JSON"
 
 mkdir -p "$TMP_DIR/app"
 cd "$TMP_DIR/app"
