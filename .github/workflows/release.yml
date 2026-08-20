@@ -25,6 +25,7 @@ jobs:
           cache: npm
           registry-url: https://registry.npmjs.org
       - run: npm ci
+      - run: npm run release:verify -- "$GITHUB_REF_NAME"
       - run: npm run release:check
       - run: npm pack
       - name: Publish npm package with provenance
