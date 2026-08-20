@@ -6,14 +6,17 @@ It uses one canonical `skill.yaml`, one `SKILL.md`, fixture-backed activation te
 
 ## Install
 
+The npm package is not published yet. After the maintainer publishes the `v0.2.0`
+release, install it with:
+
 ```bash
 npm install -g @rogerchappel/skillforge
 ```
 
-Or run from a checkout:
+Until then, use a checkout:
 
 ```bash
-npm install
+npm ci
 npm run build
 node dist/cli.js --help
 ```
@@ -87,3 +90,8 @@ npm run smoke
 npm run package:smoke
 npm run release:check
 ```
+
+`release:check` is non-publishing: it verifies the package name, version,
+changelog entry, expected `v<version>` tag, packed tarball metadata, and an
+installation of that tarball. Maintainers should follow
+[the release procedure](docs/RELEASE.md) to publish; pull requests never publish.
