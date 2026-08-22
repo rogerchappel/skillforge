@@ -1,12 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync, spawnSync } from 'node:child_process';
-import { mkdtemp, writeFile } from 'node:fs/promises';
+import { cp, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { buildValidationReport, renderValidationReport } from '../dist/report.js';
 
 const cli = 'dist/cli.js';
+
+async function singleHostSkill(host) {
+  const dir = await mkdtemp(join(tmpdir(), 'skillforge-report-'));
+  await cp('examples/tdd-sentinel', dir, { recursive: true });
+  const manifestPath = join(dir, 'skill.yaml');
+  const manifest = await readFile(manifestPath, 'utf8');
+  await writeFile(manifestPath, manifest.replace('  - openclaw\n  - claude-plugin', `  - ${host}`));
+  return dir;
+}
 
 test('validation report summarizes clean skills', async () => {
   const report = await buildValidationReport('examples/tdd-sentinel');
@@ -36,3 +45,17 @@ test('report command fails when validation is blocked', async () => {
   assert.equal(report.ok, false);
   assert.equal(report.counts.errors, 1);
 });
+
+for (const host of ['openclaw', 'claude-plugin']) {
+  test(`report passes for a lint-clean ${host}-only manifest`, async () => {
+    const dir = await singleHostSkill(host);
+    const report = await buildValidationReport(dir);
+    assert.equal(report.ok, true);
+    assert.equal(report.matrix.ok, true);
+    assert.deepEqual(report.hosts, [host]);
+
+    const result = spawnSync(process.execPath, [cli, 'report', dir], { encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(JSON.parse(result.stdout).ok, true);
+  });
+}

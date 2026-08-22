@@ -45,7 +45,7 @@ The package contains `skill.yaml` plus every portable source path listed in its
 - Activation clarity: examples, keywords, and fixture outcomes.
 - Safety smell tests: risky commands and unqualified external writes.
 - Portability warnings: host-specific language inside generic skill docs.
-- Compatibility matrix: declared host targets, renderability, blockers, and warnings.
+- Compatibility matrix: declared host targets, renderability, blockers, and warnings. Undeclared targets remain visible for portability planning but do not block the matrix or report release gate; every declared host must be renderable.
 
 ## Example: TDD Sentinel
 
@@ -58,7 +58,7 @@ node dist/cli.js report examples/tdd-sentinel --format markdown
 node dist/cli.js render examples/tdd-sentinel --target openclaw --out /tmp/skillforge-openclaw
 ```
 
-`skillforge report` combines lint diagnostics and the compatibility matrix into one release-gate summary. JSON is the default for CI and agent runners; Markdown is for pull request notes.
+`skillforge report` combines lint diagnostics and the compatibility matrix into one release-gate summary. A lint-clean skill may declare one or both supported hosts; the gate passes when every declared host is renderable. JSON is the default for CI and agent runners; Markdown is for pull request notes.
 
 `skillforge lint --format json` emits only lint diagnostics and is useful when another agent or CI job wants a smaller quality gate before rendering or packaging.
 
