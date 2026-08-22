@@ -27,7 +27,7 @@ export async function buildCompatibilityMatrix(dir: string): Promise<Compatibili
 
   const rows = hostTargets.map((target) => {
     const declared = manifest.hosts.includes(target);
-    const blockers = declared ? errors : [...errors, { level: 'error' as const, code: 'host.not-declared', message: `Skill does not declare support for ${target}.` }];
+    const blockers = declared ? errors : [];
     return {
       target,
       declared,
@@ -40,7 +40,7 @@ export async function buildCompatibilityMatrix(dir: string): Promise<Compatibili
   return {
     skill: manifest.name,
     version: manifest.version,
-    ok: rows.every((row) => row.renderable),
+    ok: rows.filter((row) => row.declared).every((row) => row.renderable),
     rows
   };
 }
