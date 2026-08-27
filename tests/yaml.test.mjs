@@ -12,3 +12,17 @@ test('parses nested manifest yaml', () => {
 test('stringifies arrays and nested objects', () => {
   assert.match(stringifyYaml({ name: 'demo', hosts: ['openclaw'] }), /hosts:\n  - openclaw/);
 });
+
+test('round trips escaped quoted scalars in nested arrays', () => {
+  const manifest = {
+    metadata: {
+      examples: [
+        'label: "quoted"',
+        'windows: C:\\skills\\demo',
+        'both: "C:\\skills\\demo"',
+      ],
+    },
+  };
+
+  assert.deepEqual(parseYaml(stringifyYaml(manifest)), manifest);
+});
