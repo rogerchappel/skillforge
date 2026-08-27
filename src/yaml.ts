@@ -43,7 +43,14 @@ function parseScalar(value: string): any {
   if (value === 'true') return true;
   if (value === 'false') return false;
   if (/^-?\d+(\.\d+)?$/.test(value)) return Number(value);
-  if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) return value.slice(1, -1);
+  if (value.startsWith('"') && value.endsWith('"')) {
+    try {
+      return JSON.parse(value);
+    } catch {
+      throw new Error('YAML double-quoted scalar contains an invalid escape sequence');
+    }
+  }
+  if (value.startsWith("'") && value.endsWith("'")) return value.slice(1, -1);
   if (value.startsWith('[') && value.endsWith(']')) return value.slice(1, -1).split(',').map((v) => parseScalar(v.trim())).filter((v) => v !== '');
   return value;
 }
