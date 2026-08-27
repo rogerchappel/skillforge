@@ -11,6 +11,15 @@
 - `safety.externalWrites`: `forbidden`, `ask-first`, or `allowed`.
 - `verification`: checks an agent should run before claiming completion.
 
+## YAML subset
+
+Skillforge reads the mapping and block-list shape emitted by its own manifest
+writer. Scalars may be booleans, numbers, plain strings, JSON-compatible
+double-quoted strings (including escaped quotes and backslashes), or simple
+single-quoted strings. YAML features outside this intentionally small subset,
+including anchors, tags, multiline block scalars, and escape processing inside
+single-quoted strings, are not supported.
+
 ## Package contents
 
 `skillforge package` includes `skill.yaml`, every path declared in `files`, and
