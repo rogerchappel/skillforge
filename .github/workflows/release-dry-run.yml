@@ -25,7 +25,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run smoke --if-present
-      - run: npm pack --dry-run
+      - run: npm run release:check:dry-run
       - name: Release notes preview
         run: |
           if npm run --silent release:notes --if-present -- . > release-notes-preview.md && [ -s release-notes-preview.md ]; then

@@ -26,6 +26,7 @@
     "prepack": "npm run build",
     "pretest": "npm run build",
     "release:check": "npm run validate && npm run release:verify && npm run package:smoke",
+    "release:check:dry-run": "npm run validate && npm run release:verify -- --dry-run v$npm_package_version && npm run package:smoke",
     "release:verify": "node scripts/verify-release.mjs",
     "package:smoke": "bash scripts/package-smoke.sh",
     "lint": "npm run check"
