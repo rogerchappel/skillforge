@@ -18,11 +18,13 @@
 
 ```sh
 npm install
-npm run release:check
+npm run release:check:dry-run
 ```
 
-Expected result: TypeScript check, test suite, smoke script, release metadata,
-packed artifact installation, and package commands all pass without publishing.
+Expected result: TypeScript check, test suite, smoke script, explicit pre-tag
+release metadata verification, packed artifact installation, and package
+commands all pass without publishing. After creating the local tag, use the
+strict `npm run release:check` gate before pushing it.
 
 ## Limits
 

@@ -92,6 +92,9 @@ npm run release:check
 ```
 
 `release:check` is non-publishing: it verifies the package name, version,
-changelog entry, expected `v<version>` tag, packed tarball metadata, and an
-installation of that tarball. Maintainers should follow
-[the release procedure](docs/RELEASE.md) to publish; pull requests never publish.
+changelog entry, that the expected `v<version>` tag exists at `HEAD`, packed
+tarball metadata, and an installation of that tarball. Before creating a tag,
+maintainers can run the explicit `npm run release:check:dry-run` variant, which
+validates the expected tag value without requiring it to exist. Maintainers
+should follow [the release procedure](docs/RELEASE.md) to publish; pull requests
+never publish.
