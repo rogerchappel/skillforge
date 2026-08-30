@@ -1,5 +1,5 @@
 import { buildCompatibilityMatrix } from './matrix.js';
-import { hasErrors, lintSkill } from './lint.js';
+import { declaredHosts, hasErrors, lintSkill } from './lint.js';
 import { readManifest } from './io.js';
 import type { Diagnostic, HostTarget } from './types.js';
 
@@ -28,7 +28,7 @@ export async function buildValidationReport(dir: string): Promise<ValidationRepo
   };
   return {
     manifest: manifest.name,
-    hosts: manifest.hosts,
+    hosts: declaredHosts(manifest.hosts),
     ok: !hasErrors(diagnostics) && matrix.ok,
     diagnostics,
     counts,

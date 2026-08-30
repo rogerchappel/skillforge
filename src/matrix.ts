@@ -1,8 +1,8 @@
 import { readManifest } from './io.js';
-import { hasErrors, lintSkill } from './lint.js';
+import { declaredHosts, hasErrors, lintSkill, supportedHosts } from './lint.js';
 import type { Diagnostic, HostTarget } from './types.js';
 
-export const hostTargets: HostTarget[] = ['openclaw', 'claude-plugin'];
+export const hostTargets: HostTarget[] = supportedHosts;
 
 export interface CompatibilityMatrixRow {
   target: HostTarget;
@@ -24,10 +24,12 @@ export async function buildCompatibilityMatrix(dir: string): Promise<Compatibili
   const diagnostics = await lintSkill(dir);
   const errors = diagnostics.filter((diagnostic) => diagnostic.level === 'error');
   const warnings = diagnostics.filter((diagnostic) => diagnostic.level === 'warning');
+  const hosts = declaredHosts(manifest.hosts);
+  const hostsInvalid = errors.some((diagnostic) => diagnostic.code === 'manifest.hosts');
 
   const rows = hostTargets.map((target) => {
-    const declared = manifest.hosts.includes(target);
-    const blockers = declared ? errors : [];
+    const declared = hosts.includes(target);
+    const blockers = declared || hostsInvalid ? errors : [];
     return {
       target,
       declared,
@@ -40,7 +42,7 @@ export async function buildCompatibilityMatrix(dir: string): Promise<Compatibili
   return {
     skill: manifest.name,
     version: manifest.version,
-    ok: rows.filter((row) => row.declared).every((row) => row.renderable),
+    ok: !hostsInvalid && rows.filter((row) => row.declared).every((row) => row.renderable),
     rows
   };
 }
