@@ -6,7 +6,7 @@
 - `description`: activation-oriented summary of when the skill should be used.
 - `activation.examples`: prompts that should trigger the skill.
 - `activation.antiExamples`: prompts that should not trigger the skill. Anti-examples veto keyword or example matches when all meaningful anti-example words appear in the prompt.
-- `hosts`: render targets supported by the skill source.
+- `hosts`: a non-empty block list of render targets supported by the skill source. Each value must be `openclaw` or `claude-plugin`; scalars, empty lists, and other host names are rejected with a `manifest.hosts` diagnostic.
 - `files`: relative paths to the portable source files required by the skill.
 - `safety.externalWrites`: `forbidden`, `ask-first`, or `allowed`.
 - `verification`: checks an agent should run before claiming completion.

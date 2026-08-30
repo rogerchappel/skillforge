@@ -58,7 +58,7 @@ node dist/cli.js report examples/tdd-sentinel --format markdown
 node dist/cli.js render examples/tdd-sentinel --target openclaw --out /tmp/skillforge-openclaw
 ```
 
-`skillforge report` combines lint diagnostics and the compatibility matrix into one release-gate summary. A lint-clean skill may declare one or both supported hosts; the gate passes when every declared host is renderable. JSON is the default for CI and agent runners; Markdown is for pull request notes.
+`skillforge report` combines lint diagnostics and the compatibility matrix into one release-gate summary. A lint-clean skill must declare a non-empty `hosts` list containing `openclaw`, `claude-plugin`, or both; scalars, empty lists, and unsupported values produce a `manifest.hosts` error. The gate passes when every declared host is renderable. JSON is the default for CI and agent runners; Markdown is for pull request notes.
 
 `skillforge lint --format json` emits only lint diagnostics and is useful when another agent or CI job wants a smaller quality gate before rendering or packaging.
 
