@@ -6,7 +6,8 @@ const changelog = readFileSync(new URL('../CHANGELOG.md', import.meta.url), 'utf
 const expectedTag = `v${packageJson.version}`;
 const args = process.argv.slice(2);
 const dryRun = args[0] === '--dry-run';
-const suppliedTag = dryRun ? args[1] : args[0] ?? process.env.GITHUB_REF_NAME;
+const workflowTag = process.env.GITHUB_REF_TYPE === 'tag' ? process.env.GITHUB_REF_NAME : undefined;
+const suppliedTag = dryRun ? args[1] : args[0] ?? workflowTag;
 
 if (packageJson.name !== '@rogerchappel/skillforge') {
   throw new Error(`unexpected package name: ${packageJson.name}`);
