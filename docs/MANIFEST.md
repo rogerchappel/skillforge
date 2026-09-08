@@ -16,9 +16,12 @@
 Skillforge reads the mapping and block-list shape emitted by its own manifest
 writer. Scalars may be booleans, numbers, plain strings, JSON-compatible
 double-quoted strings (including escaped quotes and backslashes), or simple
-single-quoted strings. YAML features outside this intentionally small subset,
-including anchors, tags, multiline block scalars, and escape processing inside
-single-quoted strings, are not supported.
+single-quoted strings (where two apostrophes decode to one). The writer quotes
+string values that resemble booleans, numbers, flow sequences, or leading-dash
+list items so a write/read round trip preserves their string type. YAML features
+outside this intentionally small subset, including anchors, tags, multiline
+block scalars, and other escape processing inside single-quoted strings, are not
+supported.
 
 ## Package contents
 
