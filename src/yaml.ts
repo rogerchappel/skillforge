@@ -50,7 +50,7 @@ function parseScalar(value: string): any {
       throw new Error('YAML double-quoted scalar contains an invalid escape sequence');
     }
   }
-  if (value.startsWith("'") && value.endsWith("'")) return value.slice(1, -1);
+  if (value.startsWith("'") && value.endsWith("'")) return value.slice(1, -1).replace(/''/g, "'");
   if (value.startsWith('[') && value.endsWith(']')) return value.slice(1, -1).split(',').map((v) => parseScalar(v.trim())).filter((v) => v !== '');
   return value;
 }
@@ -66,6 +66,11 @@ export function stringifyYaml(value: any, indent = 0): string {
 }
 
 function formatScalar(value: any): string {
-  if (typeof value === 'string') return /[:#\n]|^\s|\s$/.test(value) ? JSON.stringify(value) : value;
+  if (typeof value === 'string') {
+    const resemblesTypedScalar = /^(?:true|false|-?\d+(?:\.\d+)?|\[.*\]|-\s)/.test(value);
+    return /[:#\n]|^\s|\s$/.test(value) || resemblesTypedScalar
+      ? JSON.stringify(value)
+      : value;
+  }
   return String(value);
 }
