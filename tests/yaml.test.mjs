@@ -26,3 +26,17 @@ test('round trips escaped quoted scalars in nested arrays', () => {
 
   assert.deepEqual(parseYaml(stringifyYaml(manifest)), manifest);
 });
+
+test('round trips strings that resemble other YAML scalar types', () => {
+  const manifest = {
+    metadata: {
+      examples: ['true', 'false', '123', '-4.5', '[alpha]', '- leading dash'],
+    },
+  };
+
+  assert.deepEqual(parseYaml(stringifyYaml(manifest)), manifest);
+});
+
+test('decodes doubled apostrophes in single-quoted scalars', () => {
+  assert.deepEqual(parseYaml("name: 'Roger''s skill'\n"), { name: "Roger's skill" });
+});
